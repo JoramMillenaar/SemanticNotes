@@ -1,9 +1,7 @@
-import { app, BrowserWindow } from 'electron'
-import { createRequire } from 'node:module'
+import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-
-const require = createRequire(import.meta.url)
+import fs from 'node:fs'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // The built directory structure
@@ -65,4 +63,16 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  ipcMain.handle('dialog:openFile', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [{ name: 'Markdown Files', extensions: ['md'] }],
+    })
+    if (canceled || filePaths.length === 0) {
+      return null
+    }
+    return fs.readFileSync(filePaths[0], 'utf-8')
+  })
+  createWindow()
+})
