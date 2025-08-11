@@ -74,5 +74,35 @@ app.whenReady().then(() => {
     }
     return fs.readFileSync(filePaths[0], 'utf-8')
   })
+
+  ipcMain.handle('dialog:openDirectory', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+      properties: ['openDirectory'],
+    })
+    if (canceled || filePaths.length === 0) {
+      return null
+    }
+    return filePaths[0]
+  })
+
+  ipcMain.handle('fs:readDir', (_event, dirPath: string) => {
+    const dirents = fs.readdirSync(dirPath, { withFileTypes: true })
+    const items = dirents
+      .filter((dirent) => dirent.isDirectory() || dirent.name.toLowerCase().endsWith('.md'))
+      .map((dirent) => ({
+        name: dirent.name,
+        path: path.join(dirPath, dirent.name),
+        isDirectory: dirent.isDirectory(),
+      }))
+    return {
+      path: dirPath,
+      parent: path.dirname(dirPath),
+      items,
+    }
+  })
+
+  ipcMain.handle('fs:readFile', (_event, filePath: string) => {
+    return fs.readFileSync(filePath, 'utf-8')
+  })
   createWindow()
 })

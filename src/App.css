@@ -12,3 +12,13 @@ button {
   text-align: left;
 }
 
+.filetree ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.filetree li button {
+  display: block;
+  margin: 0.2rem 0;
+}
+
