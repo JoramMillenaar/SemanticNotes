@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import './App.css'
+import { Button } from "@/components/ui/button.tsx";
 
 interface FileEntry {
   name: string
@@ -47,8 +48,8 @@ function App() {
   }
 
   return (
-    <div>
-      <button onClick={openDirectory}>Open Directory</button>
+    <div className="p-4">
+      <Button className="mb-4 rounded bg-blue-500 px-4 py-2 text-white" onClick={openDirectory}>Open Directory</Button>
       {currentDir && (
         <div className="filetree">
           <p>Current directory: {currentDir}</p>
